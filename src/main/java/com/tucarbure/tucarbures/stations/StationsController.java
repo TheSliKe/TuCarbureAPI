@@ -9,31 +9,28 @@ import java.util.UUID;
 public class StationsController {
 
     @Autowired
-    private StationsRepository stationsRepository;
-
-    @Autowired
-    private StationsMapper stationsMapper;
+    private StationService stationService;
 
     @GetMapping("/stations")
     Iterable<StationDB> getStations() {
-        return stationsRepository.findAll();
+        return stationService.getAllStation();
     }
 
     @PostMapping(value = "/stations")
     String postStations(@RequestBody Station station) {
-        stationsRepository.save(stationsMapper.map(station));
+        stationService.saveStation(station);
         return "ok";
     }
 
     @PutMapping("/stations/{stationsId}")
     String putStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Station station){
-        stationsRepository.save(stationsMapper.map(stationsId, station));
+        stationService.updateSelectedStation(stationsId, station);
         return "ok";
     }
 
     @DeleteMapping("/stations/{stationsId}")
     String deleteStation(@PathVariable(value="stationsId") UUID stationsId){
-        stationsRepository.deleteById(stationsId);
+        stationService.deleteMarque(stationsId);
         return "ok";
     }
 
