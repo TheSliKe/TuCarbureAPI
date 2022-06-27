@@ -1,6 +1,6 @@
-package com.tucarbure.tucarbures.stations.marques;
+package com.tucarbure.tucarbures.marques;
 
-import com.tucarbure.tucarbures.stations.StationsRepository;
+import com.tucarbure.tucarbures.StationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,15 @@
-package com.tucarbure.tucarbures.stations;
+package com.tucarbure.tucarbures;
 
-import com.tucarbure.tucarbures.stations.marques.Marque;
-import com.tucarbure.tucarbures.stations.marques.MarqueDB;
-import com.tucarbure.tucarbures.stations.marques.MarqueMapper;
-import com.tucarbure.tucarbures.stations.marques.MarquesRepository;
+import com.tucarbure.tucarbures.marques.Marque;
+import com.tucarbure.tucarbures.marques.MarqueDB;
+import com.tucarbure.tucarbures.marques.MarqueMapper;
+import com.tucarbure.tucarbures.marques.MarquesRepository;
+import com.tucarbure.tucarbures.releves.ReleveCarburants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,8 +25,22 @@ public class StationService {
     @Autowired
     private StationsMapper stationsMapper;
 
-    Iterable<StationDB> getAllStation(){
-        return stationsRepository.findAll();
+    Iterable<StationDB> getAllStations(){
+        return stationsRepository.findAll(PageRequest.of(1, 50));
+    }
+
+    StationDB getStation(UUID stationId){
+        Optional<StationDB> optionalStationDB = stationsRepository.findById(stationId);
+        return optionalStationDB.get();
+    }
+
+    Iterable<ReleveCarburants> getCarburantsStation(UUID stationId){
+
+        Optional<StationDB> optionalStationDB = stationsRepository.findById(stationId);
+        if (optionalStationDB.isPresent()){
+            return optionalStationDB.get().getReleveCarburants();
+        }
+        return List.of();
     }
 
     void saveStation(Station station){

@@ -1,16 +1,11 @@
-package com.tucarbure.tucarbures.stations;
+package com.tucarbure.tucarbures;
 
-import com.tucarbure.tucarbures.stations.marques.MarqueDB;
-import com.tucarbure.tucarbures.stations.marques.MarqueMapper;
-import com.tucarbure.tucarbures.stations.marques.MarquesRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.tucarbure.tucarbures.stations.StationDB.stationDB;
+import static com.tucarbure.tucarbures.StationDB.stationDB;
 
 @Component
 public class StationsMapper {
@@ -25,7 +20,7 @@ public class StationsMapper {
                 .id(UUID.randomUUID())
                 .marque(station.getMarque())
                 .adresse(station.getAdresse())
-                .carburants(station.getCarburants())
+                .releveCarburants(station.getCarburants())
                 .updatedDate(LocalDateTime.now())
                 .build();
     }
@@ -35,7 +30,7 @@ public class StationsMapper {
                 .id(stationID)
                 .marque(station.getMarque())
                 .adresse(station.getAdresse())
-                .carburants(station.getCarburants())
+                .releveCarburants(station.getCarburants())
                 .updatedDate(LocalDateTime.now())
                 .build();
     }

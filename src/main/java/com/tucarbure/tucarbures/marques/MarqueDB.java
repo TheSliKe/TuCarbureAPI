@@ -1,4 +1,4 @@
-package com.tucarbure.tucarbures.stations.marques;
+package com.tucarbure.tucarbures.marques;
 
 
 import lombok.Builder;

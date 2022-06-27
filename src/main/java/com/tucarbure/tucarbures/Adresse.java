@@ -1,4 +1,4 @@
-package com.tucarbure.tucarbures.stations;
+package com.tucarbure.tucarbures;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.Data;
 @Builder
 public class Adresse {
 
-    private String numero;
-    private String voie;
+    private String rue;
     private String ville;
     private String codePostal;
     private double longitude;

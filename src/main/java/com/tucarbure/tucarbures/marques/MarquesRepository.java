@@ -1,4 +1,4 @@
-package com.tucarbure.tucarbures.stations.marques;
+package com.tucarbure.tucarbures.marques;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
