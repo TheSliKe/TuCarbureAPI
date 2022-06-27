@@ -10,11 +10,11 @@ import static com.tucarbure.tucarbures.stations.marques.MarqueDB.marqueDB;
 @Component
 public class MarqueMapper {
 
-    MarqueDB map(Marque marque){
+    public MarqueDB map(Marque marque){
         return marqueDB()
                 .id(UUID.randomUUID())
-                .Nom(marque.getNom())
-                .Description(marque.getDescription())
+                .nom(marque.getNom())
+                .description(marque.getDescription())
                 .build();
     }
 
@@ -22,8 +22,8 @@ public class MarqueMapper {
     MarqueDB map(UUID uuid, Marque marque){
         return marqueDB()
                 .id(uuid)
-                .Nom(marque.getNom())
-                .Description(marque.getDescription())
+                .nom(marque.getNom())
+                .description(marque.getDescription())
                 .updateDate(LocalDateTime.now())
                 .build();
     }

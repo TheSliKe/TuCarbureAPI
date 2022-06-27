@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class Marque {
 
-    private String Nom;
-    private String Description;
+    private String nom;
+    private String description;
 
 }

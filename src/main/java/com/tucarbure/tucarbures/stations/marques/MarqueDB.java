@@ -17,8 +17,8 @@ public class MarqueDB {
     @Id
     private UUID id;
 
-    private String Nom;
-    private String Description;
+    private String nom;
+    private String description;
     private LocalDateTime updateDate;
 
     public static MarqueDBBuilder marqueDB(){
