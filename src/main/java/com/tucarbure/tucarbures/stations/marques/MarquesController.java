@@ -1,8 +1,10 @@
 package com.tucarbure.tucarbures.stations.marques;
 
+import com.tucarbure.tucarbures.stations.StationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -10,6 +12,9 @@ public class MarquesController {
 
     @Autowired
     private MarquesRepository marquesRepository;
+
+    @Autowired
+    private StationsRepository stationsRepository;
 
     @Autowired
     private MarqueMapper marqueMapper;
@@ -27,7 +32,19 @@ public class MarquesController {
 
     @PutMapping("/marques/{marqueId}")
     String putMarque(@PathVariable(value="marqueId") UUID marqueId, @RequestBody Marque marque){
+
+        Optional<MarqueDB> optionalMarqueDB = marquesRepository.findById(marqueId);
+
         marquesRepository.save(marqueMapper.map(marqueId, marque));
+
+        stationsRepository.findAllByMarque(Marque.builder()
+                .nom(optionalMarqueDB.get().getNom())
+                .description(optionalMarqueDB.get().getDescription())
+                .build()).forEach(stationDB -> {
+                    stationDB.setMarque(marque);
+                    stationsRepository.save(stationDB);
+        });
+
         return "ok";
     }
 

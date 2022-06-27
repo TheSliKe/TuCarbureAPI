@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface MarquesRepository extends CrudRepository<MarqueDB, String> {
 
     void deleteById(UUID uuid);
+    Optional<MarqueDB> findById(UUID uuid);
 
     Optional<MarqueDB> findByNomAndDescription(String nom, String description);
 
