@@ -16,7 +16,7 @@ public class StationsMapper {
                 .id(UUID.randomUUID())
                 .marque(station.getMarque())
                 .adresse(station.getAdresse())
-                .releveCarburants(station.getCarburants())
+                .carburants(station.getCarburants())
                 .updatedDate(LocalDateTime.now())
                 .build();
     }
@@ -26,7 +26,7 @@ public class StationsMapper {
                 .id(stationID)
                 .marque(station.getMarque())
                 .adresse(station.getAdresse())
-                .releveCarburants(station.getCarburants())
+                .carburants(station.getCarburants())
                 .updatedDate(LocalDateTime.now())
                 .build();
     }

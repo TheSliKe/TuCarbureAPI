@@ -1,7 +1,9 @@
 package com.tucarbure.tucarbures;
 
 import com.tucarbure.tucarbures.marques.Marque;
-import com.tucarbure.tucarbures.releves.ReleveCarburants;
+import com.tucarbure.tucarbures.releves.Carburant;
+import com.tucarbure.tucarbures.releves.Carburants;
+import com.tucarbure.tucarbures.response.StationsResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ public class StationsController {
     private StationService stationService;
 
     @GetMapping("/stations")
-    Iterable<StationDB> getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int distance) {
+    StationsResponse getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int distance) {
         return stationService.getAllStationsInRange(latitude, longitude, distance);
     }
 
@@ -29,7 +31,7 @@ public class StationsController {
     }
 
     @GetMapping("/stations/{stationsId}/carburants")
-    Iterable<ReleveCarburants> getCarburantsStation(@PathVariable(value="stationsId") UUID stationsId) {
+    Carburants getCarburantsStation(@PathVariable(value="stationsId") UUID stationsId) {
         return stationService.getCarburantsStation(stationsId);
     }
 
@@ -75,14 +77,19 @@ public class StationsController {
                     System.out.println("save");
 
                     if (fields.has("fuel")){
-                        List<ReleveCarburants> list = new ArrayList<>();
+                        List<Carburant> list = new ArrayList<>();
                         String[] arrSplit = fields.getString("fuel").split("/");
                         for (int i = 0; i < arrSplit.length; i++) {
-                            list.add(ReleveCarburants.builder()
+                            list.add(Carburant.builder()
                                             .nom(arrSplit[i])
+                                            .codeEuropeen(arrSplit[i])
                                             .disponible(true)
                                     .build());
                         }
+                        Carburants carburants = Carburants.builder()
+                                .listeCarburants(arrSplit)
+                                .details(list)
+                                .build();
 
                         stationService.saveStation(Station.builder()
                                 .marque(Marque.builder()
@@ -95,7 +102,7 @@ public class StationsController {
                                         .latitude(geometry.getJSONArray("coordinates").getDouble(1))
                                         .longitude(geometry.getJSONArray("coordinates").getDouble(0))
                                         .build())
-                                .carburants(list)
+                                .carburants(carburants)
                                 .build()
                         );
 

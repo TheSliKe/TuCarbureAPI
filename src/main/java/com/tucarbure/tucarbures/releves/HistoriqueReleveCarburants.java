@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -16,9 +17,9 @@ public class HistoriqueReleveCarburants {
     @Id
     private UUID id;
 
-    private ReleveCarburants releveCarburants;
     private UUID stationId;
     private LocalDateTime date;
+    private Carburants carburants;
 
     public static HistoriqueReleveCarburantsBuilder historiqueReleveCarburantsBuilder(){
         return HistoriqueReleveCarburants.builder();

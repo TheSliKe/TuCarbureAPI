@@ -7,15 +7,14 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ReleveCarburants {
+public class Carburant {
 
     private String nom;
     private String codeEuropeen;
     private boolean disponible;
-    private LocalDateTime lastUpdate;
     private double prix;
 
-    public static ReleveCarburants.ReleveCarburantsBuilder carburants(){
-        return ReleveCarburants.builder();
+    public static Carburant.CarburantBuilder carburants(){
+        return Carburant.builder();
     }
 }

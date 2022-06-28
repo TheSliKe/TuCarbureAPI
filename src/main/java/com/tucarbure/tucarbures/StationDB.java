@@ -1,7 +1,8 @@
 package com.tucarbure.tucarbures;
 
-import com.tucarbure.tucarbures.releves.ReleveCarburants;
+import com.tucarbure.tucarbures.releves.Carburant;
 import com.tucarbure.tucarbures.marques.Marque;
+import com.tucarbure.tucarbures.releves.Carburants;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -20,7 +21,7 @@ public class StationDB {
     private UUID id;
     private Marque marque;
     private Adresse adresse;
-    private List<ReleveCarburants> releveCarburants;
+    private Carburants carburants;
     private LocalDateTime updatedDate;
 
     public static StationDB.StationDBBuilder stationDB(){

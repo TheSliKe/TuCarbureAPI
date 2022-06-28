@@ -12,11 +12,11 @@ import java.util.UUID;
 public class ReleveCarburantsController {
 
     @Autowired
-    private HistoriqueReleveCarburantsRepository historiqueReleveCarburantsRepository;
+    private HistoriqueReleveCarburantService historiqueReleveCarburantService;
 
     @GetMapping("/stations/{stationsId}/historique")
     Iterable<HistoriqueReleveCarburants> getHistorique(@PathVariable(value="stationsId") UUID stationsId, @RequestParam int nb) {
-        return historiqueReleveCarburantsRepository.findAllByStationIdOrderByDateDesc(stationsId);
+        return historiqueReleveCarburantService.getHistoriqueReleveCarburants(stationsId, nb);
     }
 
 }

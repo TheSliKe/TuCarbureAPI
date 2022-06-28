@@ -4,15 +4,14 @@ import com.tucarbure.tucarbures.marques.Marque;
 import com.tucarbure.tucarbures.marques.MarqueDB;
 import com.tucarbure.tucarbures.marques.MarqueMapper;
 import com.tucarbure.tucarbures.marques.MarquesRepository;
-import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants;
+import com.tucarbure.tucarbures.releves.Carburants;
 import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburantsRepository;
-import com.tucarbure.tucarbures.releves.ReleveCarburants;
+import com.tucarbure.tucarbures.response.StationsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +32,7 @@ public class StationService {
     @Autowired
     private StationsMapper stationsMapper;
 
-    Iterable<StationDB> getAllStationsInRange(double latitude, double longitude, int distance){
+    StationsResponse getAllStationsInRange(double latitude, double longitude, int distance){
 
         double r_earth = 6378;
 
@@ -42,7 +41,16 @@ public class StationService {
         double longitude1 = longitude + (distance / r_earth) * (180 / Math.PI) / Math.cos(latitude * Math.PI/180);
         double longitude2 = longitude + (-distance / r_earth) * (180 / Math.PI) / Math.cos(latitude * Math.PI/180);
 
-        return stationsRepository.findAllByAdresse_LatitudeBetweenAndAdresse_LongitudeBetween(latitude2, latitude1, longitude2, longitude1);
+        List<StationDB> stationList = new ArrayList<>();
+        stationsRepository.findAllByAdresse_LatitudeBetweenAndAdresse_LongitudeBetween(latitude2, latitude1, longitude2, longitude1).forEach(stationList::add);
+
+        return StationsResponse.builder()
+                .nbEnregistrement(stationList.size())
+                .latitude(latitude)
+                .longitude(longitude)
+                .range(distance)
+                .stations(stationList)
+                .build();
     }
 
     StationDB getStation(UUID stationId){
@@ -50,13 +58,10 @@ public class StationService {
         return optionalStationDB.get();
     }
 
-    Iterable<ReleveCarburants> getCarburantsStation(UUID stationId){
+    Carburants getCarburantsStation(UUID stationId){
 
         Optional<StationDB> optionalStationDB = stationsRepository.findById(stationId);
-        if (optionalStationDB.isPresent()){
-            return optionalStationDB.get().getReleveCarburants();
-        }
-        return List.of();
+        return optionalStationDB.map(StationDB::getCarburants).orElse(null);
     }
 
     void saveStation(Station station){
@@ -74,16 +79,14 @@ public class StationService {
     void updateSelectedStation(UUID stationId, Station station){
 
         System.out.println(station);
-        station.getCarburants().forEach(releveCarburants -> {
-            historiqueReleveCarburantsRepository.save(
-                    historiqueReleveCarburantsBuilder()
-                            .id(UUID.randomUUID())
-                            .stationId(stationId)
-                            .releveCarburants(releveCarburants)
-                            .date(LocalDateTime.now())
-                            .build()
-            );
-        });
+
+        historiqueReleveCarburantsRepository.save(historiqueReleveCarburantsBuilder()
+                .id(UUID.randomUUID())
+                .stationId(stationId)
+                .carburants(station.getCarburants())
+                .date(LocalDateTime.now())
+                .build()
+        );
 
         saveStationDB(stationsMapper.map(stationId, station));
     }

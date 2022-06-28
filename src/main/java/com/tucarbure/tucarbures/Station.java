@@ -1,7 +1,8 @@
 package com.tucarbure.tucarbures;
 
-import com.tucarbure.tucarbures.releves.ReleveCarburants;
+import com.tucarbure.tucarbures.releves.Carburant;
 import com.tucarbure.tucarbures.marques.Marque;
+import com.tucarbure.tucarbures.releves.Carburants;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,6 +14,6 @@ public class Station {
 
     private Marque marque;
     private Adresse adresse;
-    private List<ReleveCarburants> carburants;
+    private Carburants carburants;
 
 }
