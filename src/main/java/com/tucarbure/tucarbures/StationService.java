@@ -8,6 +8,7 @@ import com.tucarbure.tucarbures.releves.ReleveCarburants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +26,16 @@ public class StationService {
     @Autowired
     private StationsMapper stationsMapper;
 
-    Iterable<StationDB> getAllStations(){
-        return stationsRepository.findAll(PageRequest.of(1, 50));
+    Iterable<StationDB> getAllStationsInRange(double latitude, double longitude, int distance){
+
+        double r_earth = 6378;
+
+        double latitude1  = latitude  + (distance / r_earth) * (180 / Math.PI);
+        double latitude2  = latitude  + (-distance / r_earth) * (180 / Math.PI);
+        double longitude1 = longitude + (distance / r_earth) * (180 / Math.PI) / Math.cos(latitude * Math.PI/180);
+        double longitude2 = longitude + (-distance / r_earth) * (180 / Math.PI) / Math.cos(latitude * Math.PI/180);
+
+        return stationsRepository.findAllByAdresse_LatitudeBetweenAndAdresse_LongitudeBetween(latitude2, latitude1, longitude2, longitude1);
     }
 
     StationDB getStation(UUID stationId){

@@ -13,8 +13,8 @@ public class StationsController {
     private StationService stationService;
 
     @GetMapping("/stations")
-    Iterable<StationDB> getStations() {
-        return stationService.getAllStations();
+    Iterable<StationDB> getStations(@RequestParam double latitue, @RequestParam double longitude, @RequestParam int distance) {
+        return stationService.getAllStationsInRange(latitue, longitude, distance);
     }
 
     @GetMapping("/stations/{stationsId}")

@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST,"/auth/register").permitAll()
+                .antMatchers("/swagger-ui/**", "/v3/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/stations", "/stations/**").permitAll()
                 .anyRequest().authenticated().and().csrf()
                 .disable().exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()
