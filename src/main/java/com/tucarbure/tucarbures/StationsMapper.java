@@ -10,10 +10,6 @@ import static com.tucarbure.tucarbures.StationDB.stationDB;
 @Component
 public class StationsMapper {
 
-
-
-
-
     StationDB map(Station station){
 
         return stationDB()

@@ -19,8 +19,8 @@ public class StationsController {
     private StationService stationService;
 
     @GetMapping("/stations")
-    Iterable<StationDB> getStations(@RequestParam double latitue, @RequestParam double longitude, @RequestParam int distance) {
-        return stationService.getAllStationsInRange(latitue, longitude, distance);
+    Iterable<StationDB> getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int distance) {
+        return stationService.getAllStationsInRange(latitude, longitude, distance);
     }
 
     @GetMapping("/stations/{stationsId}")
@@ -54,7 +54,7 @@ public class StationsController {
     @GetMapping("/test")
     String test() {
 
-        final String uri = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=prix-des-carburants-j-1&q=&rows=10000";
+        final String uri = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=prix-des-carburants-j-1&q=&rows=10";
 
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(uri, String.class);

@@ -4,21 +4,28 @@ import com.tucarbure.tucarbures.marques.Marque;
 import com.tucarbure.tucarbures.marques.MarqueDB;
 import com.tucarbure.tucarbures.marques.MarqueMapper;
 import com.tucarbure.tucarbures.marques.MarquesRepository;
+import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants;
+import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburantsRepository;
 import com.tucarbure.tucarbures.releves.ReleveCarburants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants.historiqueReleveCarburantsBuilder;
 
 @Service
 public class StationService {
 
     @Autowired
     private StationsRepository stationsRepository;
+    @Autowired
+    private HistoriqueReleveCarburantsRepository historiqueReleveCarburantsRepository;
     @Autowired
     private MarquesRepository marquesRepository;
     @Autowired
@@ -65,6 +72,19 @@ public class StationService {
     }
 
     void updateSelectedStation(UUID stationId, Station station){
+
+        System.out.println(station);
+        station.getCarburants().forEach(releveCarburants -> {
+            historiqueReleveCarburantsRepository.save(
+                    historiqueReleveCarburantsBuilder()
+                            .id(UUID.randomUUID())
+                            .stationId(stationId)
+                            .releveCarburants(releveCarburants)
+                            .date(LocalDateTime.now())
+                            .build()
+            );
+        });
+
         saveStationDB(stationsMapper.map(stationId, station));
     }
 

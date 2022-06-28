@@ -35,8 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable().csrf().disable().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/auth/login").permitAll()
-                .antMatchers(HttpMethod.POST,"/auth/register").permitAll()
+                .antMatchers(HttpMethod.POST,"/auth/login", "/auth/register").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/**").permitAll()
                 .antMatchers("/test").permitAll()
                 .antMatchers(HttpMethod.GET,"/stations", "/stations/**").permitAll()
