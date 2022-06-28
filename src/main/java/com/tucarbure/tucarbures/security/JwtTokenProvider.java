@@ -27,8 +27,8 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.AUBqR6g-xBekiqbUOusTZB9nBJC2ljzelk6XKzMlVfs}")
     private String secretKey = "eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.AUBqR6g-xBekiqbUOusTZB9nBJC2ljzelk6XKzMlVfs";
 
-    @Value("${security.jwt.token.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000; // 1h
+    @Value("${security.jwt.token.expire-length:1800000}")
+    private long validityInMilliseconds = 1800000; // 1h
 
     @Autowired
     private CustomUserDetailsService userDetailsService;

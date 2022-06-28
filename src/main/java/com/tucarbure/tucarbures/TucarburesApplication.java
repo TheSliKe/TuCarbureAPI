@@ -19,6 +19,13 @@ public class TucarburesApplication {
 
 		return args -> {
 
+			Role userRole = roleRepository.findByRole("USER");
+			if (userRole == null) {
+				Role newUserRole = new Role();
+				newUserRole.setRole("USER");
+				roleRepository.save(newUserRole);
+			}
+
 			Role adminRole = roleRepository.findByRole("ADMIN");
 			if (adminRole == null) {
 				Role newAdminRole = new Role();
