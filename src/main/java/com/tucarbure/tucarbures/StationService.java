@@ -64,6 +64,29 @@ public class StationService {
         return optionalStationDB.map(StationDB::getCarburants).orElse(null);
     }
 
+    void postCarburant(UUID stationId, Carburants carburants) {
+
+        Optional<StationDB> optionalStationDB = stationsRepository.findById(stationId);
+
+        if (optionalStationDB.isPresent()){
+            StationDB stationDB = optionalStationDB.get();
+
+            stationDB.setCarburants(carburants);
+
+            historiqueReleveCarburantsRepository.save(historiqueReleveCarburantsBuilder()
+                    .id(UUID.randomUUID())
+                    .stationId(stationId)
+                    .carburants(carburants)
+                    .date(LocalDateTime.now())
+                    .build()
+            );
+
+            stationsRepository.save(stationDB);
+
+        }
+
+    }
+
     void saveStation(Station station){
 
         Marque marqueFromStation = station.getMarque();
@@ -98,5 +121,6 @@ public class StationService {
     private void saveStationDB(StationDB stationDB){
         stationsRepository.save(stationDB);
     }
+
 
 }

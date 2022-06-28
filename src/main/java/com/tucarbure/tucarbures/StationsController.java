@@ -4,6 +4,7 @@ import com.tucarbure.tucarbures.marques.Marque;
 import com.tucarbure.tucarbures.releves.Carburant;
 import com.tucarbure.tucarbures.releves.Carburants;
 import com.tucarbure.tucarbures.response.StationsResponse;
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class StationsController {
         return stationService.getCarburantsStation(stationsId);
     }
 
+    @PostMapping("/stations/{stationsId}/carburants")
+    String postCarburantsStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Carburants carburants) {
+        stationService.postCarburant(stationsId, carburants);
+        return "ok";
+    }
+
     @PostMapping("/stations")
     String postStations(@RequestBody Station station) {
         stationService.saveStation(station);
@@ -56,7 +63,7 @@ public class StationsController {
     @GetMapping("/test")
     String test() {
 
-        final String uri = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=prix-des-carburants-j-1&q=&rows=10";
+        final String uri = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=prix-des-carburants-j-1&q=&rows=10000";
 
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(uri, String.class);
@@ -74,20 +81,33 @@ public class StationsController {
                 JSONObject geometry = (JSONObject) obj.get("geometry");
 
                 if (fields.has("name") && fields.has("address") && fields.has("cp") && fields.has("com_arm_name")){
-                    System.out.println("save");
+                    System.out.println("save" + fields.getString("name"));
 
                     if (fields.has("fuel")){
                         List<Carburant> list = new ArrayList<>();
-                        String[] arrSplit = fields.getString("fuel").split("/");
-                        for (int i = 0; i < arrSplit.length; i++) {
+                        String[] fuel = fields.getString("fuel").split("/");
+                        for (int i = 0; i < fuel.length; i++) {
                             list.add(Carburant.builder()
-                                            .nom(arrSplit[i])
-                                            .codeEuropeen(arrSplit[i])
+                                            .nom(fuel[i])
+                                            .codeEuropeen(fuel[i])
                                             .disponible(true)
                                     .build());
                         }
+                        String[] shortage = new String[0];
+                        if (fields.has("shortage")){
+                            shortage = fields.getString("shortage").split("/");
+
+                            for (int i = 0; i < shortage.length; i++) {
+                                list.add(Carburant.builder()
+                                        .nom(shortage[i])
+                                        .codeEuropeen(shortage[i])
+                                        .disponible(false)
+                                        .build());
+                            }
+                        }
+
                         Carburants carburants = Carburants.builder()
-                                .listeCarburants(arrSplit)
+                                .listeCarburants(ArrayUtils.addAll(fuel, shortage))
                                 .details(list)
                                 .build();
 
