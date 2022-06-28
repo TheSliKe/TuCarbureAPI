@@ -1,9 +1,15 @@
 package com.tucarbure.tucarbures;
 
+import com.tucarbure.tucarbures.marques.Marque;
 import com.tucarbure.tucarbures.releves.ReleveCarburants;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -45,64 +51,64 @@ public class StationsController {
         return "ok";
     }
 
-//    @GetMapping("/test")
-//    String test() {
-//
-//        final String uri = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=prix-des-carburants-j-1&q=&rows=10000";
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        String result = restTemplate.getForObject(uri, String.class);
-//
-//        JSONObject jsonObject = new JSONObject(result);
-//
-//        JSONArray jsonArray = (JSONArray) jsonObject.get("records");
-//
-//        jsonArray.forEach(item -> {
-//
-//            JSONObject obj = (JSONObject) item;
-//            JSONObject fields = (JSONObject) obj.get("fields");
-//
-//            if (obj.has("geometry")){
-//                JSONObject geometry = (JSONObject) obj.get("geometry");
-//
-//                if (fields.has("name") && fields.has("address") && fields.has("cp") && fields.has("com_arm_name")){
-//                    System.out.println("save");
-//
-//                    if (fields.has("fuel")){
-//                        List<ReleveCarburants> list = new ArrayList<>();
-//                        String[] arrSplit = fields.getString("fuel").split("/");
-//                        for (int i = 0; i < arrSplit.length; i++) {
-//                            list.add(ReleveCarburants.builder()
-//                                            .nom(arrSplit[i])
-//                                            .disponible(true)
-//                                    .build());
-//                        }
-//
-//                        stationService.saveStation(Station.builder()
-//                                .marque(Marque.builder()
-//                                        .nom(fields.getString("name"))
-//                                        .description(fields.getString("name")).build())
-//                                .adresse(Adresse.builder()
-//                                        .rue(fields.getString("address"))
-//                                        .codePostal(fields.getString("cp"))
-//                                        .ville(fields.getString("com_arm_name"))
-//                                        .latitude(geometry.getJSONArray("coordinates").getDouble(1))
-//                                        .longitude(geometry.getJSONArray("coordinates").getDouble(0))
-//                                        .build())
-//                                .carburants(list)
-//                                .build()
-//                        );
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//        return "ok";
-//    }
+    @GetMapping("/test")
+    String test() {
+
+        final String uri = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=prix-des-carburants-j-1&q=&rows=10000";
+
+        RestTemplate restTemplate = new RestTemplate();
+        String result = restTemplate.getForObject(uri, String.class);
+
+        JSONObject jsonObject = new JSONObject(result);
+
+        JSONArray jsonArray = (JSONArray) jsonObject.get("records");
+
+        jsonArray.forEach(item -> {
+
+            JSONObject obj = (JSONObject) item;
+            JSONObject fields = (JSONObject) obj.get("fields");
+
+            if (obj.has("geometry")){
+                JSONObject geometry = (JSONObject) obj.get("geometry");
+
+                if (fields.has("name") && fields.has("address") && fields.has("cp") && fields.has("com_arm_name")){
+                    System.out.println("save");
+
+                    if (fields.has("fuel")){
+                        List<ReleveCarburants> list = new ArrayList<>();
+                        String[] arrSplit = fields.getString("fuel").split("/");
+                        for (int i = 0; i < arrSplit.length; i++) {
+                            list.add(ReleveCarburants.builder()
+                                            .nom(arrSplit[i])
+                                            .disponible(true)
+                                    .build());
+                        }
+
+                        stationService.saveStation(Station.builder()
+                                .marque(Marque.builder()
+                                        .nom(fields.getString("name"))
+                                        .description(fields.getString("name")).build())
+                                .adresse(Adresse.builder()
+                                        .rue(fields.getString("address"))
+                                        .codePostal(fields.getString("cp"))
+                                        .ville(fields.getString("com_arm_name"))
+                                        .latitude(geometry.getJSONArray("coordinates").getDouble(1))
+                                        .longitude(geometry.getJSONArray("coordinates").getDouble(0))
+                                        .build())
+                                .carburants(list)
+                                .build()
+                        );
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        return "ok";
+    }
 
 
 }
