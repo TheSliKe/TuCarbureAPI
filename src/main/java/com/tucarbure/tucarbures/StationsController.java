@@ -84,6 +84,7 @@ public class StationsController {
                     System.out.println("save" + fields.getString("name"));
 
                     if (fields.has("fuel")){
+
                         List<Carburant> list = new ArrayList<>();
                         String[] fuel = fields.getString("fuel").split("/");
                         for (int i = 0; i < fuel.length; i++) {
@@ -91,8 +92,10 @@ public class StationsController {
                                             .nom(fuel[i])
                                             .codeEuropeen(fuel[i])
                                             .disponible(true)
-                                    .build());
+                                    .build()
+                            );
                         }
+
                         String[] shortage = new String[0];
                         if (fields.has("shortage")){
                             shortage = fields.getString("shortage").split("/");
@@ -102,7 +105,8 @@ public class StationsController {
                                         .nom(shortage[i])
                                         .codeEuropeen(shortage[i])
                                         .disponible(false)
-                                        .build());
+                                        .build()
+                                );
                             }
                         }
 
