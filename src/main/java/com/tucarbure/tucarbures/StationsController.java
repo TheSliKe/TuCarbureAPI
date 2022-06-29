@@ -12,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -23,6 +21,21 @@ public class StationsController {
 
     @Autowired
     private StationService stationService;
+
+    public final static Map<String, String> CARBURANTS = new HashMap<String, String>()
+    {{
+        put("SP95", "E5");
+        put("SP98", "E5");
+        put("SP95-E10", "E10");
+        put("Super Ethanol", "E85");
+        put("Gazole", "B7");
+        put("Gazole EMAG", "B10");
+        put("Gazole Paraffinique", "XTL");
+        put("Hydrogène", "H2");
+        put("GPL-C", "LPG");
+        put("Gaz Naturel Comprimé", "GNC");
+        put("Gaz Naturel Liquéfié", "GNL");
+    }};
 
     @GetMapping("/stations")
     ResponseEntity<StationsResponse> getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam(defaultValue = "20", required = false) Integer distance) {
@@ -88,10 +101,25 @@ public class StationsController {
                         List<Carburant> list = new ArrayList<>();
                         String[] fuel = fields.getString("fuel").split("/");
                         for (int i = 0; i < fuel.length; i++) {
+
+                            String nomCarburant;
+                            switch (fuel[i]) {
+                                case "SP95" -> nomCarburant = "SP95";
+                                case "SP98" -> nomCarburant = "SP98";
+                                case "E10" -> nomCarburant = "SP95-E10";
+                                case "E85" -> nomCarburant = "Super Ethanol";
+                                case "Gazole" -> nomCarburant = "Gazole";
+                                case "GPLc" -> nomCarburant = "GPL-C";
+                                default -> {
+                                    System.out.println(fuel[i]);
+                                    nomCarburant = "oups";
+                                }
+                            }
+
                             list.add(Carburant.builder()
-                                            .nom(fuel[i])
-                                            .codeEuropeen(fuel[i])
-                                            .disponible(true)
+                                    .nom(nomCarburant)
+                                    .codeEuropeen(CARBURANTS.get(nomCarburant))
+                                    .disponible(true)
                                     .build()
                             );
                         }
@@ -100,10 +128,26 @@ public class StationsController {
                         if (fields.has("shortage")){
                             shortage = fields.getString("shortage").split("/");
 
+
                             for (int i = 0; i < shortage.length; i++) {
+
+                                String nomCarburant;
+                                switch (shortage[i]) {
+                                    case "SP95" -> nomCarburant = "SP95";
+                                    case "SP98" -> nomCarburant = "SP98";
+                                    case "E10" -> nomCarburant = "SP95-E10";
+                                    case "E85" -> nomCarburant = "Super Ethanol";
+                                    case "Gazole" -> nomCarburant = "Gazole";
+                                    case "GPLc" -> nomCarburant = "GPL-C";
+                                    default -> {
+                                        System.out.println(shortage[i]);
+                                        nomCarburant = "oups";
+                                    }
+                                }
+
                                 list.add(Carburant.builder()
-                                        .nom(shortage[i])
-                                        .codeEuropeen(shortage[i])
+                                        .nom(nomCarburant)
+                                        .codeEuropeen(CARBURANTS.get(nomCarburant))
                                         .disponible(false)
                                         .build()
                                 );
