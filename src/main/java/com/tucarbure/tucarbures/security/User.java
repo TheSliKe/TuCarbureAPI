@@ -18,7 +18,7 @@ public class User {
     @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
     private String email;
     private String password;
-    private String fullname;
+    private String username;
     private boolean enabled;
     @DBRef
     private Set<Role> roles;
