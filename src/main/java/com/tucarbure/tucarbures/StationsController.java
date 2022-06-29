@@ -38,8 +38,8 @@ public class StationsController {
     }};
 
     @GetMapping("/stations")
-    ResponseEntity<StationsResponse> getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam(defaultValue = "20", required = false) Integer distance) {
-        return ok(stationService.getAllStationsInRange(latitude, longitude, distance));
+    ResponseEntity<StationsResponse> getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam(defaultValue = "20", required = false) Integer distance, @RequestParam(defaultValue = "", required = false) String[] codeEuropeen) {
+        return ok(stationService.getAllStationsInRange(latitude, longitude, distance, codeEuropeen));
     }
 
     @GetMapping("/stations/{stationsId}")
@@ -100,6 +100,7 @@ public class StationsController {
 
                         List<Carburant> list = new ArrayList<>();
                         String[] fuel = fields.getString("fuel").split("/");
+                        String[] fuelFinal = new String[fuel.length];
                         for (int i = 0; i < fuel.length; i++) {
 
                             String nomCarburant;
@@ -115,7 +116,7 @@ public class StationsController {
                                     nomCarburant = "oups";
                                 }
                             }
-
+                            fuelFinal[i] = CARBURANTS.get(nomCarburant);
                             list.add(Carburant.builder()
                                     .nom(nomCarburant)
                                     .codeEuropeen(CARBURANTS.get(nomCarburant))
@@ -125,8 +126,11 @@ public class StationsController {
                         }
 
                         String[] shortage = new String[0];
+                        String[] shortageFinal = new String[0];
                         if (fields.has("shortage")){
                             shortage = fields.getString("shortage").split("/");
+                            shortageFinal = new String[shortage.length];
+
 
 
                             for (int i = 0; i < shortage.length; i++) {
@@ -144,7 +148,7 @@ public class StationsController {
                                         nomCarburant = "oups";
                                     }
                                 }
-
+                                shortageFinal[i] = CARBURANTS.get(nomCarburant);
                                 list.add(Carburant.builder()
                                         .nom(nomCarburant)
                                         .codeEuropeen(CARBURANTS.get(nomCarburant))
@@ -155,7 +159,7 @@ public class StationsController {
                         }
 
                         Carburants carburants = Carburants.builder()
-                                .listeCarburants(ArrayUtils.addAll(fuel, shortage))
+                                .listeCarburants(ArrayUtils.addAll(fuelFinal, shortageFinal))
                                 .details(list)
                                 .build();
 

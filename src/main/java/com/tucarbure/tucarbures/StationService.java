@@ -19,10 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants.historiqueReleveCarburantsBuilder;
 import static com.tucarbure.tucarbures.response.GenericErrorResponse.genericErrorResponseBuilder;
@@ -49,7 +46,7 @@ public class StationService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    StationsResponse getAllStationsInRange(double latitude, double longitude, int distance){
+    StationsResponse getAllStationsInRange(double latitude, double longitude, int distance, String[] code){
 
         double r_earth = 6378;
 
@@ -61,13 +58,41 @@ public class StationService {
         List<StationDB> stationList = new ArrayList<>();
         stationsRepository.findAllByAdresse_LatitudeBetweenAndAdresse_LongitudeBetween(latitude2, latitude1, longitude2, longitude1).forEach(stationList::add);
 
-        return StationsResponse.builder()
+        List<StationDB> stationDBListFinal = new ArrayList<>();
+
+        if (code.length > 0){
+
+            for (StationDB station : stationList) {
+
+                for (int i = 0; i < code.length; i++) {
+
+                    if (Arrays.asList(station.getCarburants().getListeCarburants()).contains(code[i])){
+                        stationDBListFinal.add(station);
+                    }
+
+                }
+
+            }
+
+            return StationsResponse.builder()
+                    .nbEnregistrement(stationDBListFinal.size())
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .range(distance)
+                    .stations(stationDBListFinal)
+                    .build();
+
+        } else {
+
+            return StationsResponse.builder()
                 .nbEnregistrement(stationList.size())
                 .latitude(latitude)
                 .longitude(longitude)
                 .range(distance)
                 .stations(stationList)
                 .build();
+        }
+
     }
 
     ResponseEntity<?> getStation(UUID stationId){

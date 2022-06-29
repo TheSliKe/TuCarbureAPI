@@ -7,3 +7,16 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=tucarbure
     ports:
       - '27018:27018'
+
+  prometheus:
+    image: prom/prometheus:v2.36.2
+    volumes:
+      - C:\Project\TuCarbures\tucarbures\docker\prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
