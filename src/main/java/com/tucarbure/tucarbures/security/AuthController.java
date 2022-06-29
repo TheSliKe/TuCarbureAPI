@@ -1,9 +1,5 @@
 package com.tucarbure.tucarbures.security;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.tucarbure.tucarbures.security.usermanagement.UserProfil;
 import com.tucarbure.tucarbures.security.usermanagement.UserProfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.tucarbure.tucarbures.security.usermanagement.UserProfil.userProfilBuilder;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.tucarbure.tucarbures.security.usermanagement.UserProfilDB.userProfilDBBuilder;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -64,7 +63,7 @@ public class AuthController {
             throw new BadCredentialsException("User with username: " + user.getEmail() + " already exists");
         }
         System.out.println(user);
-        userProfilRepository.save(userProfilBuilder()
+        userProfilRepository.save(userProfilDBBuilder()
                 .username(user.getUsername())
                 .nom("")
                 .prenom("")
