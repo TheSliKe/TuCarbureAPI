@@ -58,13 +58,13 @@ public class StationsController {
     }
 
     @PostMapping("/stations/{stationsId}/carburants")
-    ResponseEntity<?> postCarburantsStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Carburants carburants) {
-        return stationService.postCarburant(stationsId, carburants);
+    ResponseEntity<?> postCarburantsStation(@RequestHeader("Authorization") String Authorization, @PathVariable(value="stationsId") UUID stationsId, @RequestBody Carburants carburants) {
+        return stationService.postCarburant(stationsId, carburants, Authorization);
     }
 
     @PutMapping("/stations/{stationsId}")
-    ResponseEntity<?> putStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Station station){
-        return stationService.updateSelectedStation(stationsId, station);
+    ResponseEntity<?> putStation(@RequestHeader("Authorization") String Authorization, @PathVariable(value="stationsId") UUID stationsId, @RequestBody Station station){
+        return stationService.updateSelectedStation(stationsId, station, Authorization);
     }
 
     @DeleteMapping("/stations/{stationsId}")

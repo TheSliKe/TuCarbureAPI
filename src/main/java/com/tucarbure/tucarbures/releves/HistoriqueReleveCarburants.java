@@ -20,6 +20,7 @@ public class HistoriqueReleveCarburants {
     private UUID stationId;
     private LocalDateTime date;
     private Carburants carburants;
+    private String username;
 
     public static HistoriqueReleveCarburantsBuilder historiqueReleveCarburantsBuilder(){
         return HistoriqueReleveCarburants.builder();

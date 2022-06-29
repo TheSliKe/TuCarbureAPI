@@ -5,18 +5,24 @@ import com.tucarbure.tucarbures.marques.MarqueDB;
 import com.tucarbure.tucarbures.marques.MarqueMapper;
 import com.tucarbure.tucarbures.marques.MarquesRepository;
 import com.tucarbure.tucarbures.releves.Carburants;
+import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants;
 import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburantsRepository;
-import com.tucarbure.tucarbures.response.GenericErrorResponse;
 import com.tucarbure.tucarbures.response.StationsResponse;
-import org.apache.tomcat.util.json.JSONParser;
-import org.json.JSONObject;
+import com.tucarbure.tucarbures.security.JwtTokenProvider;
+import com.tucarbure.tucarbures.security.User;
+import com.tucarbure.tucarbures.security.UserRepository;
+import com.tucarbure.tucarbures.security.usermanagement.UserProfilDB;
+import com.tucarbure.tucarbures.security.usermanagement.UserProfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants.historiqueReleveCarburantsBuilder;
 import static com.tucarbure.tucarbures.response.GenericErrorResponse.genericErrorResponseBuilder;
@@ -31,9 +37,17 @@ public class StationService {
     @Autowired
     private MarquesRepository marquesRepository;
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserProfilRepository userProfilRepository;
+    @Autowired
     private MarqueMapper marqueMapper;
     @Autowired
     private StationsMapper stationsMapper;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     StationsResponse getAllStationsInRange(double latitude, double longitude, int distance){
 
@@ -78,11 +92,14 @@ public class StationService {
 
     }
 
-    ResponseEntity<?> postCarburant(UUID stationId, Carburants carburants) {
+    ResponseEntity<?> postCarburant(UUID stationId, Carburants carburants, String Authorization) {
+
+
+        String username = userRepository.findByEmail(jwtTokenProvider.getUsername(Authorization.substring(7))).getUsername();
 
         Optional<StationDB> optionalStationDB = stationsRepository.findById(stationId);
 
-        if (optionalStationDB.isEmpty()){
+        if (optionalStationDB.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericErrorResponseBuilder().code(404).message("UUID not found").build());
         }
 
@@ -90,17 +107,32 @@ public class StationService {
 
         stationDB.setCarburants(carburants);
 
-        historiqueReleveCarburantsRepository.save(historiqueReleveCarburantsBuilder()
+        HistoriqueReleveCarburants historique = historiqueReleveCarburantsBuilder()
                 .id(UUID.randomUUID())
                 .stationId(stationId)
                 .carburants(carburants)
                 .date(LocalDateTime.now())
-                .build()
-        );
+                .username(username)
+                .build();
+        historiqueReleveCarburantsRepository.save(historique);
+
+        UserProfilDB userProfilDB = userProfilRepository.findById(username).get();
+
+
+        if (userProfilDB.getReleveIds() == null){
+            userProfilDB.setReleveIds(new ArrayList<>());
+            userProfilDB.getReleveIds().add(historique.getId());
+        } else {
+            userProfilDB.getReleveIds().add(historique.getId());
+        }
+
+        userProfilRepository.save(userProfilDB);
+
 
         stationsRepository.save(stationDB);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(genericErrorResponseBuilder().code(201).message("Carburants saved").build());
+
 
     }
 
@@ -119,15 +151,23 @@ public class StationService {
         return ResponseEntity.status(HttpStatus.CREATED).body(genericErrorResponseBuilder().code(201).message("Station created with UUID : " + stationDB.getId()).build());
     }
 
-    ResponseEntity<?> updateSelectedStation(UUID stationId, Station station){
+    ResponseEntity<?> updateSelectedStation(UUID stationId, Station station, String Authorization){
 
-        historiqueReleveCarburantsRepository.save(historiqueReleveCarburantsBuilder()
+        String username = userRepository.findByEmail(jwtTokenProvider.getUsername(Authorization.substring(7))).getUsername();
+
+        HistoriqueReleveCarburants historique = historiqueReleveCarburantsBuilder()
                 .id(UUID.randomUUID())
                 .stationId(stationId)
                 .carburants(station.getCarburants())
                 .date(LocalDateTime.now())
-                .build()
-        );
+                .username(username)
+                .build();
+        historiqueReleveCarburantsRepository.save(historique);
+
+        UserProfilDB userProfilDB = userProfilRepository.findById(username).get();
+        userProfilDB.getReleveIds().add(historique.getId());
+        userProfilRepository.save(userProfilDB);
+
 
         saveStationDB(stationsMapper.map(stationId, station));
 
@@ -141,6 +181,5 @@ public class StationService {
     private void saveStationDB(StationDB stationDB){
         stationsRepository.save(stationDB);
     }
-
 
 }

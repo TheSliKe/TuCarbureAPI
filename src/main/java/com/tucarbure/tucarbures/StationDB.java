@@ -1,6 +1,5 @@
 package com.tucarbure.tucarbures;
 
-import com.tucarbure.tucarbures.releves.Carburant;
 import com.tucarbure.tucarbures.marques.Marque;
 import com.tucarbure.tucarbures.releves.Carburants;
 import lombok.Builder;
@@ -9,7 +8,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data

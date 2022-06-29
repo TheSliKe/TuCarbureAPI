@@ -1,13 +1,12 @@
 package com.tucarbure.tucarbures.releves;
 
 
-import com.tucarbure.tucarbures.StationDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,4 +36,7 @@ public class HistoriqueReleveCarburantService {
         }
     }
 
+    public HistoriqueReleveCarburants getHistorique(UUID historiqueId) {
+        return historiqueReleveCarburantsRepository.findById(historiqueId).get();
+    }
 }

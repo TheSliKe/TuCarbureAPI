@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.tucarbure.tucarbures.releves.CodeCarburants.codeCarburantsBuilder;
@@ -21,6 +22,11 @@ public class ReleveCarburantsController {
     @GetMapping("/stations/{stationsId}/historique")
     Iterable<HistoriqueReleveCarburants> getHistorique(@PathVariable(value="stationsId") UUID stationsId, @RequestParam int nb) {
         return historiqueReleveCarburantService.getHistoriqueReleveCarburants(stationsId, nb);
+    }
+
+    @GetMapping("/historique/{historiqueId}")
+    HistoriqueReleveCarburants getHistoriqueGiven(@PathVariable(value="historiqueId") UUID historiqueId) {
+        return historiqueReleveCarburantService.getHistorique(historiqueId);
     }
 
     @GetMapping("/carburants")
