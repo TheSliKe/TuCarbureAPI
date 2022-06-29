@@ -8,12 +8,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class StationsController {
@@ -22,36 +25,33 @@ public class StationsController {
     private StationService stationService;
 
     @GetMapping("/stations")
-    StationsResponse getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int distance) {
-        return stationService.getAllStationsInRange(latitude, longitude, distance);
+    ResponseEntity<StationsResponse> getStations(@RequestParam double latitude, @RequestParam double longitude, @RequestParam(defaultValue = "20", required = false) Integer distance) {
+        return ok(stationService.getAllStationsInRange(latitude, longitude, distance));
     }
 
     @GetMapping("/stations/{stationsId}")
-    StationDB getStation(@PathVariable(value="stationsId") UUID stationsId) {
+    ResponseEntity<?> getStation(@PathVariable(value="stationsId") UUID stationsId) {
         return stationService.getStation(stationsId);
     }
 
+    @PostMapping("/stations")
+    ResponseEntity<?> postStations(@RequestBody Station station) {
+        return stationService.saveStation(station);
+    }
+
     @GetMapping("/stations/{stationsId}/carburants")
-    Carburants getCarburantsStation(@PathVariable(value="stationsId") UUID stationsId) {
+    ResponseEntity<?> getCarburantsStation(@PathVariable(value="stationsId") UUID stationsId) {
         return stationService.getCarburantsStation(stationsId);
     }
 
     @PostMapping("/stations/{stationsId}/carburants")
-    String postCarburantsStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Carburants carburants) {
-        stationService.postCarburant(stationsId, carburants);
-        return "ok";
-    }
-
-    @PostMapping("/stations")
-    String postStations(@RequestBody Station station) {
-        stationService.saveStation(station);
-        return "ok";
+    ResponseEntity<?> postCarburantsStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Carburants carburants) {
+        return stationService.postCarburant(stationsId, carburants);
     }
 
     @PutMapping("/stations/{stationsId}")
-    String putStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Station station){
-        stationService.updateSelectedStation(stationsId, station);
-        return "ok";
+    ResponseEntity<?> putStation(@PathVariable(value="stationsId") UUID stationsId, @RequestBody Station station){
+        return stationService.updateSelectedStation(stationsId, station);
     }
 
     @DeleteMapping("/stations/{stationsId}")
