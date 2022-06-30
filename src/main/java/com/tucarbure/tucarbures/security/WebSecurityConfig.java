@@ -40,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/test").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/stations", "/stations/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/marques").permitAll()
                 .antMatchers(HttpMethod.GET,"/carburants").permitAll()
                 .anyRequest().authenticated().and().csrf()
                 .disable().exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()
