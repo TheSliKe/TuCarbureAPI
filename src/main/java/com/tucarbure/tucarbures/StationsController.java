@@ -1,24 +1,18 @@
 package com.tucarbure.tucarbures;
 
-import com.tucarbure.tucarbures.marques.Marque;
-import com.tucarbure.tucarbures.releves.Carburant;
 import com.tucarbure.tucarbures.releves.Carburants;
 import com.tucarbure.tucarbures.response.StationsResponse;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.springframework.http.ResponseEntity.ok;
 

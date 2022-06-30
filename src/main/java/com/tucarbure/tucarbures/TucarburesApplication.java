@@ -139,8 +139,6 @@ public class TucarburesApplication {
 								shortage = fields.getString("shortage").split("/");
 								shortageFinal = new String[shortage.length];
 
-
-
 								for (int i = 0; i < shortage.length; i++) {
 
 									String nomCarburant;

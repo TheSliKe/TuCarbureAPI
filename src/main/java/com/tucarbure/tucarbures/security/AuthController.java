@@ -1,7 +1,9 @@
 package com.tucarbure.tucarbures.security;
 
+import com.tucarbure.tucarbures.response.GenericErrorResponse;
 import com.tucarbure.tucarbures.security.usermanagement.UserProfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tucarbure.tucarbures.response.GenericErrorResponse.genericErrorResponseBuilder;
 import static com.tucarbure.tucarbures.security.usermanagement.UserProfilDB.userProfilDBBuilder;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -73,7 +76,7 @@ public class AuthController {
         if (userExists != null) {
             throw new BadCredentialsException("User with username: " + user.getEmail() + " already exists");
         }
-        System.out.println(user);
+
         userProfilRepository.save(userProfilDBBuilder()
                 .username(user.getUsername())
                 .nom("")

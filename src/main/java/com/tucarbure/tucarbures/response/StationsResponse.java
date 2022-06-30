@@ -13,6 +13,7 @@ public class StationsResponse {
     private double longitude;
     private double range;
     private Iterable<StationDB> stations;
+    private StationDB bestStation;
 
 
 }

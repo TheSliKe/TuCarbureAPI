@@ -9,7 +9,6 @@ import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants;
 import com.tucarbure.tucarbures.releves.HistoriqueReleveCarburantsRepository;
 import com.tucarbure.tucarbures.response.StationsResponse;
 import com.tucarbure.tucarbures.security.JwtTokenProvider;
-import com.tucarbure.tucarbures.security.User;
 import com.tucarbure.tucarbures.security.UserRepository;
 import com.tucarbure.tucarbures.security.usermanagement.UserProfilDB;
 import com.tucarbure.tucarbures.security.usermanagement.UserProfilRepository;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.tucarbure.tucarbures.releves.HistoriqueReleveCarburants.historiqueReleveCarburantsBuilder;
 import static com.tucarbure.tucarbures.response.GenericErrorResponse.genericErrorResponseBuilder;
@@ -59,6 +59,7 @@ public class StationService {
         stationsRepository.findAllByAdresse_LatitudeBetweenAndAdresse_LongitudeBetween(latitude2, latitude1, longitude2, longitude1).forEach(stationList::add);
 
         List<StationDB> stationDBListFinal = new ArrayList<>();
+        AtomicReference<StationDB> bestStation = new AtomicReference<>();
 
         if (code.length > 0){
 
@@ -74,12 +75,40 @@ public class StationService {
 
             }
 
+            if (code.length == 1){
+                for (StationDB sdb: stationDBListFinal) {
+
+                    if (bestStation.get() == null){
+                        bestStation.set(sdb);
+                    } else {
+
+                        bestStation.get().getCarburants().getDetails().forEach(carburant -> {
+                            if (carburant.getCodeEuropeen().equals(code[0])){
+
+                                sdb.getCarburants().getDetails().forEach(carburant1 -> {
+
+                                    if (carburant.getPrix() > carburant1.getPrix()){
+                                        bestStation.set(sdb);
+                                    }
+
+                                });
+
+                            }
+                        });
+
+                    }
+
+
+                }
+            }
+
             return StationsResponse.builder()
                     .nbEnregistrement(stationDBListFinal.size())
                     .latitude(latitude)
                     .longitude(longitude)
                     .range(distance)
                     .stations(stationDBListFinal)
+                    .bestStation(bestStation.get())
                     .build();
 
         } else {
