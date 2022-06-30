@@ -18,7 +18,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -102,7 +104,7 @@ public class TucarburesApplication {
 					JSONObject geometry = (JSONObject) obj.get("geometry");
 
 					if (fields.has("name") && fields.has("address") && fields.has("cp") && fields.has("com_arm_name")){
-						System.out.println("save" + fields.getString("name"));
+
 
 						if (fields.has("fuel")){
 
@@ -169,10 +171,34 @@ public class TucarburesApplication {
 									.details(list)
 									.build();
 
+
+							String[] marque = {
+									"auchan",
+									"super u",
+									"carrefour",
+									"intermarche",
+									"leclerc",
+									"casino",
+									"agip",
+									"avia",
+									"simply market",
+									"u express",
+									"hyper u",
+									"sarl",
+									"esso"
+							};
+
+							String name = fields.getString("name").toLowerCase();
+
+							String nom = getMatchingSubstring(name, Arrays.asList(marque));
+
+							System.out.println("save " + nom);
+
 							stationService.saveStation(Station.builder()
 									.marque(Marque.builder()
-											.nom(fields.getString("name"))
-											.description(fields.getString("name")).build())
+											.nom(nom)
+											.description("Description " + nom)
+											.build())
 									.adresse(Adresse.builder()
 											.rue(fields.getString("address"))
 											.codePostal(fields.getString("cp"))
@@ -195,6 +221,14 @@ public class TucarburesApplication {
 		}
 
 
+	}
+	private static String getMatchingSubstring(String str, List<String> substrings) {
+		for (String substring : substrings) {
+			if (str.contains(substring)) {
+				return substring;
+			}
+		}
+		return str;
 	}
 
 }

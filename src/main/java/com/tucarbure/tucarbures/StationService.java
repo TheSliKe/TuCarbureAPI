@@ -35,7 +35,6 @@ public class StationService {
     private MarquesRepository marquesRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserProfilRepository userProfilRepository;
     @Autowired
@@ -98,8 +97,9 @@ public class StationService {
 
                     }
 
-
                 }
+
+                stationDBListFinal.remove(bestStation.get());
             }
 
             return StationsResponse.builder()
