@@ -86,9 +86,6 @@ public class StationsController {
         return stationService.getCarburantsStation(stationsId);
     }
 
-
-
-
     @PutMapping("/stations/{stationsId}")
     @Operation(summary = "Modification d'une station service", description = "Lors de l'appel, on enregistre en BDD histo les carburant puis on met à jour les nouvelles informations de la station service", responses = {
             @ApiResponse(responseCode = "200", description = "Enregistrement en BDD ok"),
@@ -107,7 +104,6 @@ public class StationsController {
     ResponseEntity<?> postCarburantsStation(@RequestHeader("Authorization") String Authorization, @PathVariable(value="stationsId") UUID stationsId, @RequestBody Carburants carburants) {
         return stationService.postCarburant(stationsId, carburants, Authorization);
     }
-
 
     @DeleteMapping("/stations/{stationsId}")
     @Operation(summary = "Suppression d'une station service", description = "Lors de l'appel, on supprime en BDD la station service", responses = {

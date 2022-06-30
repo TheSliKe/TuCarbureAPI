@@ -3,6 +3,9 @@ package com.tucarbure.tucarbures;
 import com.tucarbure.tucarbures.marques.Marque;
 import com.tucarbure.tucarbures.releves.Carburant;
 import com.tucarbure.tucarbures.releves.Carburants;
+import com.tucarbure.tucarbures.releves.code.CodeCarburantRepository;
+import com.tucarbure.tucarbures.releves.code.CodeCarburants;
+import com.tucarbure.tucarbures.releves.code.CodeCarburantsDB;
 import com.tucarbure.tucarbures.security.Role;
 import com.tucarbure.tucarbures.security.RoleRepository;
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,8 +20,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.tucarbure.tucarbures.StationsController.CARBURANTS;
+import static com.tucarbure.tucarbures.releves.code.CodeCarburants.codeCarburantsBuilder;
+import static com.tucarbure.tucarbures.releves.code.CodeCarburantsDB.codeCarburantsDBBuilder;
 
 @SpringBootApplication
 public class TucarburesApplication {
@@ -28,7 +34,7 @@ public class TucarburesApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(RoleRepository roleRepository) {
+	CommandLineRunner init(RoleRepository roleRepository, CodeCarburantRepository codeCarburantRepository) {
 
 		return args -> {
 
@@ -40,6 +46,26 @@ public class TucarburesApplication {
 			}
 
 			initStation();
+
+			if (codeCarburantRepository.count() == 0) {
+				List<CodeCarburantsDB> codeCarburants = new ArrayList<CodeCarburantsDB>() {
+					{
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("SP95").code("E5").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("SP98").code("E5").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("SP95-E10").code("E10").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Super Ethanol").code("E85").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Gazole").code("B7").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Gazole EMAG").code("B10").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Gazole Paraffinique").code("XTL").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Hydrogène").code("H2").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("GPL-C").code("LPG").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Gaz Naturel Comprimé").code("GNC").build());
+						add(codeCarburantsDBBuilder().id(UUID.randomUUID()).nom("Gaz Naturel Liquéfié").code("GNL").build());
+					}
+				};
+
+				codeCarburantRepository.saveAll(codeCarburants);
+			}
 
 			Role adminRole = roleRepository.findByRole("ADMIN");
 			if (adminRole == null) {

@@ -1,4 +1,4 @@
-package com.tucarbure.tucarbures.releves;
+package com.tucarbure.tucarbures.releves.code;
 
 import lombok.Builder;
 import lombok.Data;
