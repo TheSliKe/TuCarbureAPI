@@ -5,6 +5,9 @@ import com.tucarbure.tucarbures.security.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 public class UserController {
 
@@ -16,6 +19,10 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/user/{username}")
+    @Operation(summary = "Récupére l'utilisateur connecté", description = "Lors de l'appel, on retourne les informations de l'utilisateur connecté", responses = {
+            @ApiResponse(responseCode = "200", description = "JSON des informations utilisateur ok"),
+            @ApiResponse(responseCode = "400", description = "User name introuvable")
+    })
     UserProfilDB getUser(@RequestHeader("Authorization") String Authorization, @PathVariable(value="username") String username) {
 
         String usernameAuth = userRepository.findByEmail(jwtTokenProvider.getUsername(Authorization.substring(7))).getUsername();
@@ -25,6 +32,7 @@ public class UserController {
         }
 
         return UserProfilDB.userProfilDBBuilder().build();
+
     }
 
     @PostMapping("/user/{username}")

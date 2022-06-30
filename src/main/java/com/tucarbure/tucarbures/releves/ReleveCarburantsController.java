@@ -13,6 +13,9 @@ import java.util.UUID;
 
 import static com.tucarbure.tucarbures.releves.CodeCarburants.codeCarburantsBuilder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 public class ReleveCarburantsController {
 
@@ -20,7 +23,12 @@ public class ReleveCarburantsController {
     private HistoriqueReleveCarburantService historiqueReleveCarburantService;
 
     @GetMapping("/stations/{stationsId}/historique")
-    Iterable<HistoriqueReleveCarburants> getHistorique(@PathVariable(value="stationsId") UUID stationsId, @RequestParam int nb) {
+    @Operation(summary = "historisque d'une station service", description = "Lors de l'appel, on retourne un JSON de la station service avec l'historique des prix carburants", responses = {
+            @ApiResponse(responseCode = "200", description = "JSON ok"),
+            @ApiResponse(responseCode = "400", description = "id station inexistant")
+    })
+    Iterable<HistoriqueReleveCarburants> getHistorique(@PathVariable(value = "stationsId") UUID stationsId,
+            @RequestParam int nb) {
         return historiqueReleveCarburantService.getHistoriqueReleveCarburants(stationsId, nb);
     }
 
@@ -30,6 +38,9 @@ public class ReleveCarburantsController {
     }
 
     @GetMapping("/carburants")
+    @Operation(summary = "Liste des carburants", description = "Lors de l'appel, on retourne un JSON de la liste des carburants", responses = {
+            @ApiResponse(responseCode = "200", description = "JSON ok")
+    })
     List<CodeCarburants> getcarburants() {
 
         List<CodeCarburants> codeCarburants = new ArrayList<CodeCarburants>() {
