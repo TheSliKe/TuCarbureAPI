@@ -33,7 +33,11 @@ public class ReleveCarburantsController {
     }
 
     @GetMapping("/historique/{historiqueId}")
-    HistoriqueReleveCarburants getHistoriqueGiven(@PathVariable(value="historiqueId") UUID historiqueId) {
+    @Operation(summary = "Historique d'une modifaction prix fait par l'utilisateur", description = "Lors de l'appel, on retourne un JSON de l'historisation d'une modification prix carburant fait pas l'utilisateur", responses = {
+            @ApiResponse(responseCode = "200", description = "JSON ok"),
+            @ApiResponse(responseCode = "400", description = "historiqueId inconnue ou introuvable"),
+    })
+    HistoriqueReleveCarburants getHistoriqueGiven(@PathVariable(value = "historiqueId") UUID historiqueId) {
         return historiqueReleveCarburantService.getHistorique(historiqueId);
     }
 
