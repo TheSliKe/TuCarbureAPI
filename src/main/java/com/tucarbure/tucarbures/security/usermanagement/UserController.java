@@ -23,11 +23,13 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "JSON des informations utilisateur ok"),
             @ApiResponse(responseCode = "400", description = "User name introuvable")
     })
-    UserProfilDB getUser(@RequestHeader("Authorization") String Authorization, @PathVariable(value="username") String username) {
+    UserProfilDB getUser(@RequestHeader("Authorization") String Authorization,
+            @PathVariable(value = "username") String username) {
 
-        String usernameAuth = userRepository.findByEmail(jwtTokenProvider.getUsername(Authorization.substring(7))).getUsername();
+        String usernameAuth = userRepository.findByEmail(jwtTokenProvider.getUsername(Authorization.substring(7)))
+                .getUsername();
 
-        if (usernameAuth.equals(username)){
+        if (usernameAuth.equals(username)) {
             return userProfilRepository.findById(username).get();
         }
 
@@ -36,17 +38,19 @@ public class UserController {
     }
 
     @PostMapping("/user/{username}")
-    String postUser(@PathVariable(value="username") String username, @RequestBody UserProfil userProfil){
+    @Operation(summary = "Mise à jour du profil utilisateur", description = "Lors de l'appel, on met à jour le profil de l'utilisateur par rapport à son username", responses = {
+            @ApiResponse(responseCode = "200", description = "Mise à jour des informations utilisateur ok"),
+            @ApiResponse(responseCode = "400", description = "User name introuvable")
+    })
+    String postUser(@PathVariable(value = "username") String username, @RequestBody UserProfil userProfil) {
 
         userProfilRepository.save(UserProfilDB.userProfilDBBuilder()
                 .username(username)
                 .nom(userProfil.getNom())
                 .prenom(userProfil.getPrenom())
-                .build()
-        );
+                .build());
 
         return "ok";
     }
-
 
 }
