@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.tucarbure.tucarbures.security.usermanagement.UserProfil.userProfilBuilder;
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -40,6 +43,10 @@ public class AuthController {
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/login")
+    @Operation(summary = "Connexion à l'application", description = "Lors de l'appel, on vérifie que les information de connexion existe en BDD", responses = {
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "400", description = "email, password, ou token introuvable")
+    })
     public ResponseEntity login(@RequestBody AuthBody data) {
         try {
             String email = data.getEmail();
@@ -58,6 +65,10 @@ public class AuthController {
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/register")
+    @Operation(summary = "Inscription à l'application", description = "Lors de l'appel, on vérifie que l'email n'exite pas en base puis on ajoute le profil utilisateur et ses informations de connexion dans login", responses = {
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "400", description = "email déjà existant")
+    })
     public ResponseEntity register(@RequestBody User user) {
         User userExists = userService.findUserByEmail(user.getEmail());
         if (userExists != null) {
@@ -68,8 +79,7 @@ public class AuthController {
                 .username(user.getUsername())
                 .nom("")
                 .prenom("")
-                .build()
-        );
+                .build());
         userService.saveUser(user);
         Map<Object, Object> model = new HashMap<>();
         model.put("message", "User registered successfully");
