@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: 'mongo:latest'
+    image: 'mongo:4.2.21'
     command: mongod --port 27018
     environment:
       - MONGO_INITDB_ROOT_USERNAME=tucarbure

@@ -64,9 +64,9 @@ public class StationService {
 
             for (StationDB station : stationList) {
 
-                for (int i = 0; i < code.length; i++) {
+                for (String s : code) {
 
-                    if (Arrays.asList(station.getCarburants().getListeCarburants()).contains(code[i])){
+                    if (Arrays.asList(station.getCarburants().getListeCarburants()).contains(s) && !stationDBListFinal.contains(station)) {
                         stationDBListFinal.add(station);
                     }
 
@@ -201,6 +201,10 @@ public class StationService {
 
     void deleteMarque(UUID stationId){
         stationsRepository.deleteById(stationId);
+    }
+
+    public long countStation(){
+        return stationsRepository.count();
     }
 
     private void saveStationDB(StationDB stationDB){
