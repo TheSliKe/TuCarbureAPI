@@ -3,8 +3,8 @@ services:
     image: 'mongo:4.2.21'
     command: mongod --port 27018
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=tucarbure
-      - MONGO_INITDB_ROOT_PASSWORD=tucarbure
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootoor
     ports:
       - '27018:27018'
 
